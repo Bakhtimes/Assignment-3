@@ -1,4 +1,4 @@
-const contractAddress = "0xf90a478Bf0dEA9e3a7A64aB541a3f617006324E2"; // Replace with your contract address from Ganache
+const contractAddress = "0x60768d3Fc1C82714f9eC6b5151Da1B2161e65Ebb"; // Replace with your contract address from Ganache
 const contractABI = [
   {
     "anonymous": false,
@@ -331,12 +331,12 @@ const contractABI = [
     "outputs": [
       {
         "internalType": "address payable",
-        "name": "renter",
+        "name": "provider",
         "type": "address"
       },
       {
         "internalType": "address payable",
-        "name": "provider",
+        "name": "renter",
         "type": "address"
       },
       {
@@ -603,7 +603,7 @@ async function getCompletedTasks() {
     const result = await contract.methods.results(i).call();
     const listItem = document.createElement('li');
     listItem.textContent = `Provider: ${result.provider}, Renter: ${result.renter}, Task: ${result.task}, Result: ${result.result}`;
-    
+
     resultList.appendChild(listItem);
 
   }
@@ -641,6 +641,7 @@ async function completeRental() {
     console.log(gasEstimate);
     await contract.methods.completeRental(resourceId, result).send({ from: userAccount, gas: gasEstimate, value: rental.amountPaid });
     document.getElementById("completeRentalMessage").innerText = "Rental completed successfully!";
+    getResources();
     getCompletedTasks();
   } catch (error) {
     document.getElementById("completeRentalMessage").innerText = `Error: ${error.message}`;
@@ -652,11 +653,9 @@ async function rateResource() {
   const rating = document.getElementById("rating").value;
   console.log(resourceId, rating);
   try {
-    const rental = await contract.methods.rentals(resourceId).call();
-    console.log(rental.amountPaid);
-    const gasEstimate = await contract.methods.rateResource(resourceId, rating).estimateGas({ from: userAccount, value: rental.amountPaid });
+    const gasEstimate = await contract.methods.rateResource(resourceId, rating).estimateGas({from: userAccount});
     console.log(gasEstimate);
-    await contract.methods.rateResource(resourceId, rating).send({ from: userAccount, gas: gasEstimate, value: rental.amountPaid });
+    await contract.methods.rateResource(resourceId, rating).send({ gas: gasEstimate, from:userAccount });
     document.getElementById("rateResourceMessage").innerText = "Resource rated successfully!";
     getResources();
   } catch (error) {
