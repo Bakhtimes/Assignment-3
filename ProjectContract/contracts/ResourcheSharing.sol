@@ -119,7 +119,7 @@ contract ResourceSharing {
         require(_rating >= 1 && _rating <= 5, "Rating should be between 1 and 5");
 
         Resource storage resource = resourceList[_resourceId];
-        resource.totalRating += _rating;
+        resource.totalRating += uint256(_rating);
         resource.ratingCount++;
 
     }
