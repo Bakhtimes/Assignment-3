@@ -23,14 +23,24 @@ contract ResourceSharing {
         uint256 duration; // in hours
         bool isActive;
         uint256 amountPaid;
+        string task;
+    }
+    
+    struct Task {
+        address payable provider;
+        address payable renter;
+        string task;
+        string result;
     }
 
     // Mapping for resources and rentals
     // Resource[] public resourceList;
     mapping (uint256 => Resource) public resourceList;
     mapping (uint256 => Rental) public rentals;
+    mapping (uint256 => Task) public results;
     
     uint256 public resourceCount; // Total number of resources
+    uint256 public resultCount;
 
     // Events
     event ResourceListed(uint256 resourceId, address provider, uint256 pricePerHour);
@@ -58,7 +68,7 @@ contract ResourceSharing {
     }
 
     // Function for renting a resource
-    function rentResource(uint256 _resourceId, uint256 _duration) public payable {
+    function rentResource(uint256 _resourceId, uint256 _duration, string memory _task) public payable {
         Resource storage resource = resourceList[_resourceId];
         require(resource.isAvailable, "Resource not available");
         uint256 cost = resource.pricePerHour * _duration;
@@ -69,7 +79,8 @@ contract ResourceSharing {
             startTime: block.timestamp,
             duration: _duration,
             isActive: true,
-            amountPaid: cost
+            amountPaid: cost,
+            task: _task
         });
 
         resource.isAvailable = false; // Mark resource as unavailable during rental
@@ -78,17 +89,25 @@ contract ResourceSharing {
     }
 
     // Function to complete rental and release funds
-    function completeRental(uint256 _resourceId) external payable {
+    function completeRental(uint256 _resourceId, string memory _result) external payable {
         Resource storage resource = resourceList[_resourceId];
         Rental storage rental = rentals[_resourceId];
         require(rental.isActive, "Rental not active");
         uint256 unclockTime = rental.startTime + (rental.duration*10);
-        require(block.timestamp >= unclockTime, "Rental period not over");
+        // require(block.timestamp >= unclockTime, "Rental period not over");
         require(payable(msg.sender) == rental.renter || msg.sender == resource.provider, "Only renter or provider can complete rental");
         require(msg.value >= rental.amountPaid, "Insufficient balance");
 
         rental.isActive = false;
         resource.isAvailable = true;
+
+        results[resultCount] = Task({
+            provider: resource.provider,
+            renter: rental.renter,
+            task: rental.task,
+            result: _result
+        });
+        resultCount++;
 
         // Transfer funds to provider
         resource.provider.transfer(msg.value);
