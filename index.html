@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Sharing DApp</title>
+</head>
+
+<body>
+    <h1>Resource Sharing DApp</h1>
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <button onclick="connectWallet1()">Connect Wallet</button>
+    <p id="account"></p>
+
+    <hr>
+
+    <!-- List Resource Section -->
+    <h2>List a Resource</h2>
+    <label>Description:</label><br>
+    <input type="text" id="description"><br>
+    <label>CPU Clock Speed (in MHz):</label><br>
+    <input type="number" id="CPUMHz"><br>
+    <label>GPU TFLOPS:</label><br>
+    <input type="number" id="TFLOPS"><br>
+    <label>Storage (in GBs):</label><br>
+    <input type="number" id="GBs"><br>
+    <label>Price per Hour (in Wei):</label><br>
+    <input type="number" id="pricePerHour"><br>
+    <button onclick="listResource()">List Resource</button>
+    <p id="listResourceMessage"></p>
+
+    <hr>
+
+    <section id="resource-list">
+        <h2>All Resources</h2>
+        Number of Resources: <span id="counter"></span>
+        <ol id="resources"></ol>
+    </section>
+
+    <section id="result-list">
+        <h2>All Completed tasks</h2>
+        Number of Tasks: <span id="counter1"></span>
+        <ol id="results"></ol>
+    </section>
+    <hr>
+
+    <!-- Rent Resource Section -->
+    <h2>Rent a Resource</h2>
+    <label>Resource ID:</label><br>
+    <input type="number" id="resourceId"><br>
+    <label>Duration (in hours):</label><br>
+    <input type="number" id="duration" min="1"><br>
+    <label>Task Description:</label><br>
+    <input type="text" id="taskDescription"><br>
+    <button onclick="rentResource()">Rent Resource</button>
+    <p id="rentResourceMessage"></p>
+
+    <hr>
+
+    <!-- Complete Rental Section -->
+    <h2>Complete Rental</h2>
+    <label>Resource ID:</label><br>
+    <input type="number" id="completeResourceId"><br>
+    <label>Result:</label><br>
+    <input type="text" id="completeResult"><br>
+    <button onclick="completeRental()">Complete Rental</button>
+    <p id="completeRentalMessage"></p>
+
+    <hr>
+
+    <!-- Rate Resource Section -->
+    <h2>Rate a Resource</h2>
+    <label>Resource ID:</label><br>
+    <input type="number" id="rateResourceId"><br>
+    <label>Rating (1-5):</label><br>
+    <input type="number" id="rating" min="1" max="5"><br>
+    <button onclick="rateResource()">Rate Resource</button>
+    <p id="rateResourceMessage"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="app.js">
+        
+    </script>
+</body>
+
+</html>
